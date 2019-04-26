@@ -5,11 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ejercicio Conduent</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
 </head>
 <body>
-    <h1>Holla</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div style="text-align:center">
+                  <h1>
+                    Bienvenido
+                  </h1>
+                </div>
+              </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <form action="" class="form-inline d-flex justify-content-center">
+                <div class="form-group aling-items-center">
+                    <input type="text" id="txtPath" class="form-control ml-2">
+                    <button class="btn btn-primary" onclick="leerArchivo()">Subir</button>
+                  </div>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  
+                  <table class="table">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+      </div>
+
+    <script src="src/js/main.js"></script>
+    <script src="src/js/funciones.js"></script>
 </body>
-<script>let $= require('jquery');</script>
-<script>require('popper.js');</script>
-<script>require('bootstrap');</script>
 </html>
