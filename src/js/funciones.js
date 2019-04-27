@@ -9,18 +9,16 @@ ipcRenderer.on('ObtenerNombre',(event,data)=>{
 });
 
 ipcRenderer.on('ObtencionDatos',(event,data)=>{
+    console.log(data);
     procesoFillGrafica(data);
     procesoInformacion(data);
+    procesoFillTabla(data);
 });
 
 function procesoFillGrafica(data){
     var nombres = getNombres(data);
     var calificaciones = getCalificaciones(data);
     fillGrafica(nombres,calificaciones);
-}
-
-function serializacion(data){
-    return JSON.parse(data.d);
 }
 
 function getCalificaciones(data){
@@ -69,6 +67,7 @@ function fillGrafica(nombres,calificaciones){
 
 function procesoInformacion(data){
     $('#divInfo').toggle();
+    var clima = getClima();
     var calificaciones = getCalificaciones(data);
     var nombres = getNombres(data);
     var promedio = obtenerPromedio(calificaciones);
@@ -77,6 +76,16 @@ function procesoInformacion(data){
     desplegarPeorCalificacion(peorCalificacion);
     var mejorCalificacion = obtenerMejorCalificacion(calificaciones,nombres);
     desplegarMejorCalificacion(mejorCalificacion);
+}
+
+function getClima(){
+    $.ajax({
+        type:'GET',
+        url:"http://dataservice.accuweather.com/alarms/v1/1day/245727?apikey=1fwDuveJ6IVbgoByx5xi8hWBh3J3PhjS",
+        success: function(results){
+            console.log(results);
+        }
+    });
 }
 
 function desplegarPromedio(promedio){
@@ -135,4 +144,76 @@ function obtenerMejorCalificacion(data, nombres){
 
 function desplegarMejorCalificacion(mejorCalificacion){
     $('#txtMejorCalificacion').text(mejorCalificacion);
+}
+
+function procesoFillTabla(data){
+    var tabla = $('#tabla tbody');
+    for (let i = 0; i < Object.keys(data).length; i++) {
+        var numfila = `<th scope="row">${i+1}</th>`;
+        var nombres = `<th>${data[i]['Nombres']}</th>`;
+        var apellidoMaterno = `<th>${data[i]['Apellido Materno']}</th>`;
+        var apellidoPaterno = `<th>${data[i]['Apellido Paterno']}</th>`;
+        var fechaNacimiento = `<th>${data[i]['Fecha de Nacimiento']}</th>`;
+        var grado = `<th>${data[i]['Grado']}</th>`;
+        var grupo = `<th>${data[i]['Grupo']}</th>`;
+        var calificacion = `<th>${data[i]['Calificacion']}</th>`;
+        var claveUsuario = `<th>${getClave(data[i])}</th>`;
+        var suma = numfila+nombres+apellidoMaterno+apellidoPaterno+fechaNacimiento+grado+grupo+calificacion+claveUsuario;
+        var fila = `<tr>${suma}</tr>`;
+        tabla.append(fila);
+    }
+    $('#divTabla').toggle();
+}
+
+function getClave(data){
+    var nombre = data['Nombres'].substring(0,2);
+    var apellido = data['Apellido Materno'].substring((data['Apellido Materno'].length - 2)
+                                                      ,data['Apellido Materno'].length);
+    var letras = getLetras(nombre,apellido);
+    console.log(letras);
+    if(typeof data['Fecha de Nacimiento'] == "string"){
+        var nacimiento = data['Fecha de Nacimiento'].substring(6,data['Fecha de Nacimiento'].length);
+        var actualYear = new Date().getFullYear();
+        var edad = parseInt(actualYear) - parseInt(nacimiento);
+        return (letras+edad)
+    }else{
+        return "";
+    }
+}
+
+function getLetras(nombre,apellido){
+    var letraNombre1 =  getLetraAbecedario(nombre.substring(0,1));
+    var letraNombre2 = getLetraAbecedario(nombre.substring(1,2));
+    var letraAp1 = getLetraAbecedario(apellido.substring(0,1));
+    var letraAp2 = getLetraAbecedario(apellido.substring(1,2));
+    return (letraNombre1+letraNombre2+letraAp1+letraAp2);
+}
+
+function getLetraAbecedario(data){
+    var abecedario = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+    var lugar = 0;
+    for (let i = 0; i < abecedario.length; i++) {
+        if(data.toUpperCase() == abecedario[i]){
+            lugar = i;
+            if((lugar - 3 )>=0){
+                return abecedario[lugar-3];
+            }else{
+                if((lugar-3) == -1){
+                    return abecedario[abecedario.length -1];
+                }else{
+                    if((lugar-3) == -2){
+                        return abecedario[abecedario.length-2];
+                    }else{
+                        if((lugar - 3) == -3){
+                            return abecedario[abecedario.length-3];
+                        }else{
+                            if((lugar -3) == 0){
+                                return abecedario[0];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
