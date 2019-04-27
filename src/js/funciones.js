@@ -33,7 +33,7 @@ function getCalificaciones(data){
 function getNombres(data){
     var nombres = new Array();
     for(var x=0;x < Object.keys(data).length;x++){
-        var item = `${data[x]["Nombres"]} ${data[x]["Apellido Paterno"]}`;
+        var item = `${data[x]['Nombres']} ${data[x]['Apellido Paterno']} ${data[x]['Apellido Materno']}`;
         nombres.push(item);
     }
     return nombres;
@@ -68,13 +68,19 @@ function fillGrafica(nombres,calificaciones){
 }
 
 function procesoInformacion(data){
-    var promedio = obtenerPromedio(getCalificaciones(data));
+    $('#divInfo').toggle();
+    var calificaciones = getCalificaciones(data);
+    var nombres = getNombres(data);
+    var promedio = obtenerPromedio(calificaciones);
     desplegarPromedio(promedio);
+    var peorCalificacion = obtenerPeorCalificacion(calificaciones,nombres);
+    desplegarPeorCalificacion(peorCalificacion);
+    var mejorCalificacion = obtenerMejorCalificacion(calificaciones,nombres);
+    desplegarMejorCalificacion(mejorCalificacion);
 }
 
 function desplegarPromedio(promedio){
     $('#txtPromedio').text(promedio);
-    $('#divInfo').toggle();
 }
 
 function obtenerPromedio(data){
@@ -88,6 +94,45 @@ function obtenerPromedio(data){
     return resultado;
 }
 
-function obtenerPeorPromedio(data){
-    
+function obtenerPeorCalificacion(data, nombres){
+    var peorCalificacion = 0.0;
+    var nombrePeorCalificacion ="";
+    for(var i=0;i < data.length;i++){
+        let item = parseFloat(data[i]);
+        if(peorCalificacion == 0.0){
+            peorCalificacion = item;
+            nombrePeorCalificacion = nombres[i];
+        }else{
+            if(item < peorCalificacion){
+                peorCalificacion = item;
+                nombrePeorCalificacion = nombres[i];
+            }
+        }
+    }
+    return nombrePeorCalificacion;
+}
+function desplegarPeorCalificacion(peorCalificacion){
+    $('#txtPeorCalificacion').text(peorCalificacion);
+}
+
+function obtenerMejorCalificacion(data, nombres){
+    var mejorCalificacion = 0.0;
+    var nombreMejorCalificacion ="";
+    for(var i=0;i< data.length;i++){
+        let item = parseFloat(data[i]);
+        if(mejorCalificacion == 0.0){
+            mejorCalificacion = item;
+            nombreMejorCalificacion = nombres[i];
+        }else{
+            if(item > mejorCalificacion){
+                mejorCalificacion = item;
+                nombreMejorCalificacion = nombres[i];
+            }
+        }
+    }
+    return nombreMejorCalificacion;
+}
+
+function desplegarMejorCalificacion(mejorCalificacion){
+    $('#txtMejorCalificacion').text(mejorCalificacion);
 }
