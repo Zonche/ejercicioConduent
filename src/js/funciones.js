@@ -5,17 +5,17 @@ function leerArchivo(){
 }
 
 ipcRenderer.on('ObtenerNombre',(event,data)=>{
-    console.log(data);
+    $('#txtPath').text(data);
 });
 
 ipcRenderer.on('ObtencionDatos',(event,data)=>{
-    console.log(data);
     procesoFillGrafica(data);
+    procesoInformacion(data);
 });
 
 function procesoFillGrafica(data){
-    var nombres = getNombres(datos);
-    var calificaciones = getCalificaciones(datos);
+    var nombres = getNombres(data);
+    var calificaciones = getCalificaciones(data);
     fillGrafica(nombres,calificaciones);
 }
 
@@ -26,25 +26,26 @@ function serializacion(data){
 function getCalificaciones(data){
     var calificaciones = new Array();
     for(var x=0;x < Object.keys(data).length;x++){
-        calificaciones.push(data[x].Calificacion);
+        calificaciones.push(data[x]["Calificacion"]);
     }
     return calificaciones;
 }
 function getNombres(data){
     var nombres = new Array();
     for(var x=0;x < Object.keys(data).length;x++){
-        var item = `${data[x].Nombres} ${data[x].ApellidoPaterno}`;
+        var item = `${data[x]["Nombres"]} ${data[x]["Apellido Paterno"]}`;
         nombres.push(item);
     }
     return nombres;
 }
 
 function fillGrafica(nombres,calificaciones){
+    var Chart = require('chart.js');
     var canvas = document.getElementById('cvGrafica').getContext('2d');
     var grafica = new Chart(canvas,{
         type: 'bar',
         data: {
-            labels: [nombres],
+            labels: nombres,
             datasets:[{
                 label: 'Calificación',
                 data: calificaciones,
@@ -60,8 +61,33 @@ function fillGrafica(nombres,calificaciones){
                         beginAtZero: true
                     }
                 }]
-            }
+            },
         }
     });
 
+}
+
+function procesoInformacion(data){
+    var promedio = obtenerPromedio(getCalificaciones(data));
+    desplegarPromedio(promedio);
+}
+
+function desplegarPromedio(promedio){
+    $('#txtPromedio').text(promedio);
+    $('#divInfo').toggle();
+}
+
+function obtenerPromedio(data){
+    var tamaño = data.length;
+    var suma = 0;
+    for (var i = 0; i < data.length; i++) {
+        var item = parseFloat(data[i]);
+        suma = suma + item;
+    }
+    let resultado = (suma/tamaño);
+    return resultado;
+}
+
+function obtenerPeorPromedio(data){
+    
 }
